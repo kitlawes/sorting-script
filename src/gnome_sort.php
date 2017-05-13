@@ -19,7 +19,7 @@ while ($i < sizeof($numbers)) {
 		$numbers[$i - 1] = $numbers[$i];
 		$numbers[$i] = $previousNumber;
 		$i--;
-    }
+	}
 }
 
 // Write output file
@@ -28,9 +28,9 @@ $outputFileContents = "";
 for ($i = 0; $i < sizeof($numbers); $i++) {
 	if ($i == 0) {
 		$outputFileContents .= $numbers[$i];
-    } else {
+	} else {
 		$outputFileContents .= "," . $numbers[$i];
-    }
+	}
 }
 
 $outputFilePath = "../resources/output.txt";

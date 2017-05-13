@@ -6,12 +6,14 @@ $inputFilePath = "../resources/random_100.txt";
 $inputFile = fopen($inputFilePath, "r") or die("Unable to open " . $inputFilePath);
 $currentDigits = 0;
 $maximumDigits = 0;
+$numberAmount = 0;
 while (!feof($inputFile)) {
 	if (is_numeric(fgetc($inputFile))) {
 		$currentDigits++;
 		$maximumDigits = max($maximumDigits, $currentDigits);
 	} else {
 		$currentDigits = 0;
+		$numberAmount++;
 	}
 }
 
@@ -33,6 +35,46 @@ while (!feof($inputFile)) {
 		fwrite($outputFile, $number);
 		$number = "";
 	}
+}
+
+// SORT NUMBERS
+
+quickSort($outputFile, 0, $numberAmount - 1, $maximumDigits);
+
+function quickSort(&$outputFile, $lowerIndex, $higherIndex, $maximumDigits) {
+    if ($lowerIndex < $higherIndex) {
+        $partition = partition($outputFile, $lowerIndex, $higherIndex, $maximumDigits);
+        quickSort($outputFile, $lowerIndex, $partition - 1, $maximumDigits);
+        quickSort($outputFile, $partition + 1, $higherIndex, $maximumDigits);
+    }
+}
+
+function partition(&$outputFile, $lowerIndex, $higherIndex, $maximumDigits) {
+	fseek($outputFile, $higherIndex * ($maximumDigits + 1));
+    $pivot = fgets($outputFile, $maximumDigits + 1);
+    $i = $lowerIndex - 1;
+    for ($j = $lowerIndex; $j <= $higherIndex - 1; $j++) {
+		fseek($outputFile, $j * ($maximumDigits + 1));
+		$jNumber = fgets($outputFile, $maximumDigits + 1);
+        if (intval($jNumber) <= intval($pivot)) {
+            $i++;
+			fseek($outputFile, $i * ($maximumDigits + 1));
+			$iNumber = fgets($outputFile, $maximumDigits + 1);
+			fseek($outputFile, $j * ($maximumDigits + 1));
+            fwrite($outputFile, $iNumber);
+			fseek($outputFile, $i * ($maximumDigits + 1));
+            fwrite($outputFile, $jNumber);
+        }
+    }
+	fseek($outputFile, ($i + 1) * ($maximumDigits + 1));
+	$iIncrementedNumber = fgets($outputFile, $maximumDigits + 1);
+	fseek($outputFile, $higherIndex * ($maximumDigits + 1));
+	$higherIndexNumber = fgets($outputFile, $maximumDigits + 1);
+	fseek($outputFile, ($i + 1) * ($maximumDigits + 1));
+	fwrite($outputFile, $higherIndexNumber);
+	fseek($outputFile, $higherIndex * ($maximumDigits + 1));
+	fwrite($outputFile, $iIncrementedNumber);
+    return $i + 1;
 }
 
 // REMOVE LEADING ZEROS FROM OUTPUT FILE

@@ -1,13 +1,13 @@
 <?php
 
-// READ INPUT FILE
+// Read input file
 
 $inputFilePath = "../resources/random_100.txt";
 $inputFile = fopen($inputFilePath, "r") or die("Unable to open " . $inputFilePath);
 $inputFileContents = fread($inputFile, filesize($inputFilePath));
 fclose($inputFile);
 
-// SORT NUMBERS
+// Sort numbers
 
 $numbers = explode(",", $inputFileContents);
 $i = 0;
@@ -22,7 +22,7 @@ while ($i < sizeof($numbers)) {
     }
 }
 
-// WRITE OUTPUT FILE
+// Write output file
 
 $outputFileContents = "";
 for ($i = 0; $i < sizeof($numbers); $i++) {

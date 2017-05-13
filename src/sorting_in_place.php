@@ -35,21 +35,34 @@ while (!feof($inputFile)) {
 	}
 }
 
+// REMOVE LEADING ZEROS FROM OUTPUT FILE
+
+$outputFileSize = filesize($outputFilePath);
+rewind($outputFile);
+$number = "";
+$i = 0;
+$j = 0;
+while ($i <= $outputFileSize) {
+	$character = fgetc($outputFile);
+	$i++;
+	if (is_numeric($character)) {
+		if ($character != "0" || $number != "") {
+			$number .= $character;
+		}
+	} else {
+		fseek($outputFile, $j);
+		if ($j > 0) {
+			fwrite($outputFile, ",");
+		}
+		fwrite($outputFile, $number);
+		$number = "";
+		$j = ftell($outputFile);
+		fseek($outputFile, $i);
+	}
+}
+ftruncate($outputFile, $j);
+
 fclose($inputFile);
 fclose($outputFile);
-
-/*
-fseek($inputFile, 1);
-$test = fgets($inputFile, 5);
-echo $test . "\n";
-fseek($inputFile, 5);
-$test = fgets($inputFile, 3);
-echo $test . "\n";
-fseek($inputFile, 2);
-$test = fgets($inputFile, 4);
-echo $test . "\n";
-fwrite($inputFile, "test\n");
-fclose($inputFile);
-*/
 
 ?>
